@@ -5,7 +5,7 @@ import java.util.UUID;
 public class CorrelationId {
     private final String id;
 
-    CorrelationId(String title) {
+    public CorrelationId(String title) {
         id = title + "(" + UUID.randomUUID().toString() + ")";
     }
 

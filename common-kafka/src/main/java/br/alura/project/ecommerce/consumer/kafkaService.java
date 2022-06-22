@@ -1,7 +1,7 @@
 package br.alura.project.ecommerce.consumer;
 
-import br.alura.project.ecommerce.Message;
 import br.alura.project.ecommerce.dispatcher.GsonSerializer;
+import br.alura.project.ecommerce.Message;
 import br.alura.project.ecommerce.dispatcher.kafkaDispatcher;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -58,12 +58,13 @@ public class kafkaService<T> implements Closeable {
     }
     private Properties getProperties(String  groupId, Map<String, String> overrideProperties) {
         var properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"192.168.1.58:9092");
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"10.10.3.25:9092");
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,"1");
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.putAll(overrideProperties);
         return properties;
     }

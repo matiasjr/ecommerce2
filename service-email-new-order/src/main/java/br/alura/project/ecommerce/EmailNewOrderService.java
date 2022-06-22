@@ -1,28 +1,21 @@
 package br.alura.project.ecommerce;
 
-import br.alura.project.ecommerce.consumer.kafkaService;
+import br.alura.project.ecommerce.consumer.ConsumerService;
+import br.alura.project.ecommerce.consumer.ServiceRunner;
 import br.alura.project.ecommerce.dispatcher.kafkaDispatcher;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.math.BigDecimal;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class EmailNewOrderService {
+public class EmailNewOrderService implements ConsumerService<Order> {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        var fraudService = new EmailNewOrderService();
-        try (var service = new kafkaService<>(EmailNewOrderService.class.getSimpleName(),
-                "ECOMMERCE_NEW_ORDER",
-                fraudService::parse,
-                Map.of())) {
-            service.run();
-        }
+    public static void main(String[] args) {
+        new ServiceRunner(EmailNewOrderService::new).start(1);
     }
 
     private final kafkaDispatcher<String> emailDispatcher = new kafkaDispatcher<>();
 
-    private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
+    public void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("------------------------------------------------");
         System.out.println("Processing New Order, preparing email");
         var message = record.value();
@@ -33,6 +26,16 @@ public class EmailNewOrderService {
         var id = message.getId().continueWith(EmailNewOrderService.class.getSimpleName());
         emailDispatcher.send("ECOMMERCE_SEND_EMAIL", order.getEmail(),
                 id, emailCode);
+    }
+
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return EmailNewOrderService.class.getSimpleName();
     }
 
 }
