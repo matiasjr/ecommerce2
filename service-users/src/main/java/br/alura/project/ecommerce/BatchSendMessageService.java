@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class BatchSendMessageService {
 
@@ -30,9 +29,8 @@ public class BatchSendMessageService {
     public static void main(String[] args) throws Exception {
         var batchService = new BatchSendMessageService();
         try (var service = new kafkaService<>(BatchSendMessageService.class.getSimpleName(),
-                "SEND_MESSAGE_TO_ALL_USERS",
+                "ECOMMERCE_SEND_MESSAGE_TO_ALL_USERS",
                 batchService::parse,
-                String.class,
                 Map.of())) {
             service.run();
         }
@@ -40,21 +38,26 @@ public class BatchSendMessageService {
 
     private final kafkaDispatcher<User> userDispatcher = new kafkaDispatcher<>();
 
-    private void parse(ConsumerRecord<String, Message<String>> record) throws ExecutionException, InterruptedException, SQLException {
+    private void parse(ConsumerRecord<String, Message<String>> record) throws SQLException {
         System.out.println("------------------------------------------------");
         System.out.println("Processing New Batch");
         var message = record.value();
         System.out.println("Topic: " + message.getPayload());
 
+        if(true) throw new RuntimeException("deu um erro que eu forcei");
+
         for (User user : getAllUsers()) {
 
-            userDispatcher.send(message.getPayload(), user.getUuid(), user);
+            userDispatcher.sendAsync(message.getPayload(), user.getUuid(),
+                    message.getId().continueWith(BatchSendMessageService.class.getSimpleName()),
+                    user);
+            System.out.println("Acho que enviei para " + user);
         }
 
     }
 
     private List<User> getAllUsers() throws SQLException {
-        var results = connection.prepareStatement("select uuid from Users ").executeQuery();
+        var results = connection.prepareStatement("select uuid from Users").executeQuery();
         List<User> users = new ArrayList<>();
 
         while (results.next()) {

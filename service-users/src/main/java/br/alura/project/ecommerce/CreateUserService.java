@@ -20,7 +20,7 @@ public class CreateUserService {
                     "uuid varchar(200) primary key," +
                     "email varchar(200))");
         } catch (SQLException ex) {
-            // be careful, the sql could be wrong, be realllly careful
+            // be careful, the sql could be wrong, be really careful
             ex.printStackTrace();
         }
     }
@@ -29,17 +29,16 @@ public class CreateUserService {
         try (var service = new kafkaService<>(CreateUserService.class.getSimpleName(),
                 "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
-                Order.class,
                 Map.of())) {
             service.run();
         }
     }
 
-    private void parse(ConsumerRecord<String, Order> record) throws SQLException {
+    private void parse(ConsumerRecord<String, Message<Order>> record) throws SQLException {
         System.out.println("------------------------------------------------");
         System.out.println("Processing New Order, checking for new user");
         System.out.println(record.value());
-        var order = record.value();
+        var order = record.value().getPayload();
         if(isNewUser(order.getEmail())) {
             insertNewUser(order.getEmail());
         }
