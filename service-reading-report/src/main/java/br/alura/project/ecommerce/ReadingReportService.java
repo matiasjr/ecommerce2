@@ -1,5 +1,6 @@
 package br.alura.project.ecommerce;
 
+import br.alura.project.ecommerce.consumer.kafkaService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.io.File;
