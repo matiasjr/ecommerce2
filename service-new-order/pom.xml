@@ -15,13 +15,6 @@
             <groupId>br.alura.project</groupId>
             <artifactId>common-kafka</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>br.alura.project</groupId>
-            <artifactId>common-kafka</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
