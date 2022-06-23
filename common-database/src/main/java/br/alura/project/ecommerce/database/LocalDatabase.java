@@ -1,5 +1,6 @@
 package br.alura.project.ecommerce.database;
 
+import java.io.IOException;
 import java.sql.*;
 
 public class LocalDatabase {
@@ -37,5 +38,13 @@ public class LocalDatabase {
 
     public ResultSet query(String query, String... params) throws SQLException {
         return prepare(query, params).executeQuery();
+    }
+
+    public void close() throws IOException {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new IOException(e);
+        }
     }
 }

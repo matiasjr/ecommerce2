@@ -1,9 +1,8 @@
 package br.alura.project.ecommerce;
 
-import br.alura.project.ecommerce.Message;
-import br.alura.project.ecommerce.database.LocalDatabase;
 import br.alura.project.ecommerce.consumer.ConsumerService;
 import br.alura.project.ecommerce.consumer.ServiceRunner;
+import br.alura.project.ecommerce.database.LocalDatabase;
 import br.alura.project.ecommerce.dispatcher.kafkaDispatcher;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

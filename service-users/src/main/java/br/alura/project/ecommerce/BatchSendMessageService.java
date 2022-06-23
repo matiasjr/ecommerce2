@@ -1,6 +1,5 @@
 package br.alura.project.ecommerce;
 
-import br.alura.project.ecommerce.Message;
 import br.alura.project.ecommerce.consumer.kafkaService;
 import br.alura.project.ecommerce.dispatcher.kafkaDispatcher;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -47,7 +46,7 @@ public class BatchSendMessageService {
         var message = record.value();
         System.out.println("Topic: " + message.getPayload());
 
-        if(true) throw new RuntimeException("deu um erro que eu forcei");
+        //if(true) throw new RuntimeException("deu um erro que eu forcei");
 
         for (User user : getAllUsers()) {
 
